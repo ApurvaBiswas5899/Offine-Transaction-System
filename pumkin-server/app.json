@@ -1,0 +1,12 @@
+{
+  "name": "server-app",
+  "displayName": "server-app",
+  "expo": {
+    "name": "server-app",
+    "slug": "server-app",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
