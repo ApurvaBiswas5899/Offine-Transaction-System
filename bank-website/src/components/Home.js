@@ -1,13 +1,18 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { DataGrid } from '@material-ui/data-grid';
-import LOGOS from '../assets/logos/LOGOS'
+import axios from 'axios';
 
 const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
+    { 
+        field: 'id', 
+        headerName: 'ID', 
+        width: 100,
+        editable: false,
+    },
     {
         field: 'mobileNumber',
         headerName: 'Mobile number',
@@ -43,20 +48,26 @@ const transactionsColumns = [
         editable: false,
     },
     {
-        field: 'success',
-        headerName: 'Success',
+        field: 'timestamp',
+        headerName: 'Timestamp',
         width: 200,
         editable: false,
     },
     {
-        field: 'from',
-        headerName: 'From',
+        field: 'sender_mobile_number',
+        headerName: 'Sender mobile number',
         width: 200,
         editable: false,
     },
     {
-        field: 'to',
-        headerName: 'To',
+        field: 'reciever_mobile_number',
+        headerName: 'Reciever mobile number',
+        width: 200,
+        editable: false,
+    },
+    {
+        field: 'is_success',
+        headerName: 'Type',
         width: 200,
         editable: false,
     },
@@ -68,68 +79,40 @@ const transactionsColumns = [
         editable: false,
     },
     {
+        field: 'before_transaction_sender',
+        headerName: 'Before transaction sender',
+        width: 200,
+        type: 'number',
+        editable: false,
+    },
+    {
+        field: 'after_transaction_sender',
+        headerName: 'After transaction sender',
+        width: 200,
+        type: 'number',
+        editable: false,
+    },
+    {
+        field: 'before_transaction_reciever',
+        headerName: 'Before transaction reciever',
+        width: 200,
+        type: 'number',
+        editable: false,
+    },
+    {
+        field: 'after_transaction_reciever',
+        headerName: 'After transaction reciever',
+        width: 200,
+        type: 'number',
+        editable: false,
+    },
+    {
         field: 'message',
         headerName: 'Message',
         width: 200,
         editable: false,
     },
-    {
-        field: 'timestamp',
-        headerName: 'Timestamp',
-        width: 200,
-        editable: false,
-    },
-    {
-        field: 'details',
-        headerName: 'Details',
-        width: 200,
-        editable: false,
-    },
-    {
-        field: 'beforeTransaction',
-        headerName: 'Before transaction',
-        width: 200,
-        type: 'number',
-        editable: false,
-    },
-    {
-        field: 'afterTransaction',
-        headerName: 'After transaction',
-        width: 200,
-        type: 'number',
-        editable: false,
-    },
 ]
-
-const rows = [
-    { id: 1, mobileNumber: 9867130540, firstName: 'Vision', lastName: 'Maximof', balance: 50000 },
-    { id: 2, mobileNumber: 9326004454, firstName: 'Wanda', lastName: 'Maximof', balance: 100000 },
-];
-
-const transactions = [
-    {
-        mobileNumber: 9867130540,
-        transactions: [ 
-            {id: 324253425, success: '✅  Debited', from: 9867130540, to: 9326004454, amount: 450, message: 'Pizza', timestamp: '2017-12-02', details: 'Transaction Successful', beforeTransaction: 5000, afterTransaction: 6000},
-            {id: 234523452, success: '⚠️  Failed', from: 9867130540, to: 9326004454, amount: 450, message: 'Pizza', timestamp: '2017-12-02', details: 'Transaction failed', beforeTransaction: 5000, afterTransaction: 6000},
-            {id: 3245234545, success: '✅  Debited', from: 9867130540, to: 9326004454, amount: 450, message: 'Pizza', timestamp: '2017-12-02', details: 'Transaction Successful', beforeTransaction: 5000, afterTransaction: 6000},
-            {id: 24345, success: '💰  Credited', from: 9867130540, to: 9326004454, amount: 450, message: 'Pizza', timestamp: '2017-12-02', details: 'Transaction Successful', beforeTransaction: 5000, afterTransaction: 6000},
-            {id: 23452345, success: '✅  Debited', from: 9867130540, to: 9326004454, amount: 450, message: 'Pizza', timestamp: '2017-12-02', details: 'Transaction Successful', beforeTransaction: 5000, afterTransaction: 6000},
-            {id: 56474567, success: '💰  Credited', from: 9867130540, to: 9326004454, amount: 450, message: 'Pizza', timestamp: '2017-12-02', details: 'Transaction Successful', beforeTransaction: 5000, afterTransaction: 6000},
-        ]
-    },
-    {
-        mobileNumber: 9326004454,
-        transactions: [ 
-            {id: 3456456, success: '✅  Debited', from: 9867130540, to: 9326004454, amount: 450, message: 'Pizza', timestamp: '2017-12-02', details: 'Transaction Successful', beforeTransaction: 5000, afterTransaction: 6000},
-            {id: 86967584, success: '⚠️  Failed', from: 9867130540, to: 9326004454, amount: 450, message: 'Pizza', timestamp: '2017-12-02', details: 'Transaction failed', beforeTransaction: 5000, afterTransaction: 6000},
-            {id: 4536456, success: '⚠️  Failed', from: 9867130540, to: 9326004454, amount: 450, message: 'Pizza', timestamp: '2017-12-02', details: 'Transaction Successful', beforeTransaction: 5000, afterTransaction: 6000},
-            {id: 347567, success: '⚠️  Failed', from: 9867130540, to: 9326004454, amount: 450, message: 'Pizza', timestamp: '2017-12-02', details: 'Transaction Successful', beforeTransaction: 5000, afterTransaction: 6000},
-            {id: 234564356, success: '✅  Debited', from: 9867130540, to: 9326004454, amount: 450, message: 'Pizza', timestamp: '2017-12-02', details: 'Transaction Successful', beforeTransaction: 5000, afterTransaction: 6000},
-            {id: 354764676, success: '💰  Credited', from: 9867130540, to: 9326004454, amount: 450, message: 'Pizza', timestamp: '2017-12-02', details: 'Transaction Successful', beforeTransaction: 5000, afterTransaction: 6000},
-        ]
-    },
-];
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -150,32 +133,43 @@ export default function Home() {
     const [lastName, setLastName] = useState(null);
     const [mobileNumber, setMobileNumber] = useState(null);
     const [balance, setBalance] = useState(null);
-    const [showTransactionList, setShowTransactionList] = useState(null);
+    const [transactionList, setTransactionList] = useState([]);
+    const [rows, setRows] = useState([]);
 
-    const renderList = (data) => {
+    useEffect(() => {
+        getUsers();
+        getTransactions();
+    });
 
-        const show = transactions.filter(obj => {
-            return obj.mobileNumber === data.row.mobileNumber;
+    const getUsers = async () => {
+        var data = await axios.get('http://localhost:3001/api/getUsers');
+        data = data.data;
+        var count = 1;
+        data.forEach((obj) => {
+            obj.id = count;
+            count = count + 1;
         });
+        setRows(data);
+    };
 
-        return (
-            <div>
-                <div className={classes.container}>
-                    <Typography variant="h5" gutterBottom>
-                        Transaction List for {data.row.firstName}
-                    </Typography>
-                </div>
-                <div>
-                    <DataGrid
-                        rows={show[0].transactions}
-                        columns={transactionsColumns}
-                        pageSize={20}
-                        autoHeight={true}
-                    />
-                    
-                </div>
-            </div>
-        )
+    const addUser = async () => {
+        await axios.post('http://localhost:3001/api/addUser', {
+            mobileNumber: mobileNumber, 
+            firstName: firstName, 
+            lastName: lastName, 
+            balance: balance
+        });
+    }
+
+    const getTransactions = async (data) => {
+        var data = await axios.get('http://localhost:3001/api/transactions');
+        data = data.data;
+        var count = 1;
+        data.forEach((obj) => {
+            obj.id = count;
+            count = count + 1;
+        });
+        setTransactionList(data);
     }
 
     return (
@@ -235,7 +229,7 @@ export default function Home() {
                 <div className={classes.container}>
                     <div style={{marginTop: 10}}>
                         {firstName !== null && lastName !== null && mobileNumber !== null && balance !== null && firstName !== '' && lastName !== '' && mobileNumber !== '' && balance !== ''
-                        ?   <Button variant="contained" color="primary" size="large">
+                        ?   <Button variant="contained" color="primary" size="large" onClick = {() => {addUser()}}>
                                 Add user
                             </Button>
                         :   <Button variant="outlined" size='large' disabled>
@@ -258,14 +252,24 @@ export default function Home() {
                         columns={columns}
                         pageSize={10}
                         autoHeight={true}
-                        onRowClick={(GridRowParams) => {
-                            setShowTransactionList(GridRowParams);
-                        }}
                     />
                 </div>
             </div>
+            {/* Transaction List */}
             <div style = {{marginTop: 40}}>
-                {showTransactionList !== null ? renderList(showTransactionList) : null}
+                <div className={classes.container}>
+                    <Typography variant="h5" gutterBottom>
+                        Transaction List
+                    </Typography>
+                </div>
+                <div>
+                    <DataGrid
+                        rows={transactionList}
+                        columns={transactionsColumns}
+                        pageSize={10}
+                        autoHeight={true}
+                    />
+                </div>
             </div>
         </div>
     )
