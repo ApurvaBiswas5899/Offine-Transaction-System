@@ -35,6 +35,11 @@ app.get('/api/getUsers', (req, res) => {
     })
 });
 
+app.get('/api/console', (req, res) => {
+    console.log("recieved call");
+    res.send("Call processed");
+});
+
 app.get('/api/transactions', (req, res) => {
     
     const getUsers = 'SELECT * FROM bankdb.transactions;';
@@ -119,6 +124,8 @@ async function updateBalance(mobileNumber, newBalance){
 
 app.post('/api/addTransaction', async (req, res) => {
 
+    console.log('recieved');
+
     const sender_mobile_number = req.body.sender_mobile_number;
     const reciever_mobile_number = req.body.reciever_mobile_number;
     const amount = req.body.amount;
@@ -132,9 +139,11 @@ app.post('/api/addTransaction', async (req, res) => {
 
     // did not add transaction if sender/reciever not a user
     if(sender.length == 0){
+        console.log("fail0");
         res.send('fail0'); //fail0 = sender not a user
     }
     else if(reciever.length == 0){
+        console.log("fail1");
         res.send('fail1'); //fail0 = reciever not a user
     }
     else {
@@ -161,13 +170,16 @@ app.post('/api/addTransaction', async (req, res) => {
 
         db.query(addTransaction, [sender_mobile_number, reciever_mobile_number, is_success, amount, before_transaction_sender, after_transaction_sender, before_transaction_reciever, after_transaction_reciever, message], (err, result) => {
             if(err){
+                console.log(err);
                 res.send(err);
             }
             else{
                 if(is_success == 1){
+                    console.log('success');
                     res.send('success');
                 }
                 else{
+                    console.log("fail2");
                     res.send('fail2'); //fail due to lack of balance
                 }
             }

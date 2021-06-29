@@ -17,13 +17,12 @@ export default function home() {
 
 	const [message, onChangeMessage] = React.useState(null);
     const [amount, onChangeAmount] = React.useState(null);
-    const [senderMobileNumber, onChangeSenderMobileNumber] = React.useState(null);
     const [receiverMobileNumber, onChangeRecieverMobileNumber] = React.useState(null);
 
 	const sendSMS = async () => {
 		await SmsAndroid.autoSend(
 			'9326004454',
-			`From:${senderMobileNumber}\nTo:${receiverMobileNumber}\nAmount:${amount}\nMessage:${message}`,
+			`offlineTransactionSystemByManmohanAndApurva\n${receiverMobileNumber}\n${amount}\n${message}`,
 			(fail) => {
 			  console.log('Failed with this error: ' + fail);
 			},
@@ -36,7 +35,6 @@ export default function home() {
 
 		onChangeMessage(null);
 		onChangeAmount(null);
-		onChangeSenderMobileNumber(null);
 		onChangeRecieverMobileNumber(null);
 	} 
 
@@ -47,16 +45,6 @@ export default function home() {
 				<Text style={{fontSize: 24, fontFamily: "Cochin", fontWeight: 'bold'}}>Pumkin</Text>
 			</View>
 			<View style={styles.form}>
-				<TextInput 
-					style={styles.input}
-					placeholder="Sender Mobile Number"
-                    keyboardType="numeric"
-                    maxLength={10}
-					placeholderTextColor={'orange'}
-					color={'black'}
-					onChangeText={onChangeSenderMobileNumber}
-                    value={senderMobileNumber}
-				/>
                 <TextInput 
 					style={styles.input}
 					placeholder="Reciever Mobile Number"
