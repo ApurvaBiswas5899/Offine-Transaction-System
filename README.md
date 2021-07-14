@@ -6,4 +6,4 @@ We used many technologies and learned a lot of new ones. We developed a way to c
 
 Full Explanation Presentation
 
-![Presentation](./assets/Offline-transaction-system.pdf)
+![Presentation](https://drive.google.com/file/d/1V4tJY6xa6Gbz3Xd57s2kdkSKAQhCjSab/view?usp=sharing)
